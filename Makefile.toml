@@ -1,0 +1,14 @@
+extend = [
+    { path = "cargo-make/main.toml" }, # Also uses compile.toml, clean.toml, lint.toml, node.toml, and process.toml from Github:leptos-rs/leptos:examples/cargo-make
+    { path = "cargo-make/cargo-leptos.toml" },
+    { path = "cargo-make/cargo-leptos-webdriver-test.toml" }, # From leptos-rs/leptos:examples/todo_sqlite_axum/Makefile.toml
+]
+
+[env]
+CLIENT_PROCESS_NAME = "leptos-tailwind-axum-app"
+
+
+[tasks.test-ui]
+cwd = "./e2e"
+command = "cargo"
+args = ["make", "test-ui", "${@}"]

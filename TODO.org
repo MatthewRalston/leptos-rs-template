@@ -1,0 +1,90 @@
+# leptos todo readme
+* Leptos app from examples
+** Rust Installation and dependencies
+*** Variation on the "errors_axum", "static_routing", "tailwind_axum", "todo_app_sqlite_axum" examples in the Leptos project.
+*** Use the [rustup] toolchain to enable WASM and use compatible rust versions
+**** install [rustup]:
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+**** rustup check || rustup update
+**** Otherwise: the curl command (install [rustup]) configs the rustup, rustc, and cargo
+*** enable WASM for Leptos with rustup:
+rustup target add wasm32-unknown-unknown
+*** Cargo packages:
+**** 'cargo install' in package root
+**** As cargo.toml dependency format: (WIP/TODO):
+[dependencies]
+console_log = "1.0"
+console_error_panic_hook = "0.1.7"
+# futures = "0.3.30"
+http = "1.1"
+
+leptos = { version = "0.7", features = ["csr"] }
+leptos_meta = { version = "0.7" }
+leptos_router = { version = "0.7" }
+
+log = "0.4.22"
+axum = { version = "0.7.5", optional = true }
+tower = { version = "0.4.13", optional = true }
+# tower-http = { version = "0.5.2", features = ["fs"], optional = true }
+tokio = { version = "1.39", features = [
+  "rt-multi-thread",
+  "macros",
+], optional = true }
+# tokio-stream = { version = "0.1", features = ["fs"], optional = true }
+sqlx = { version = "0.8.0", features = [
+  "runtime-tokio-rustls",
+  "sqlite",
+], optional = true }
+
+thiserror = "1.0"
+
+
+wasm-bindgen = "0.2.93"
+
+
+tracing = { version = "0.1.40", optional = true }
+
+
+
+
+[features]
+hydrate = ["leptos/hydrate"]
+ssr = [
+  "dep:axum",
+  "dep:leptos_axum",
+  "dep:tokio",
+  "dep:tower",
+  "dep:tower-http",
+  "dep:sqlx",
+  "leptos/ssr",
+  "leptos_meta/ssr",
+  "leptos_router/ssr",
+  "dep:tracing",
+]
+
+# uuid leptos serde serde-json axum (0.7.5) tokio (1.39) tower (0.4.13) tower-http (cargo-leptos
+*** cargo install relevant packages according to available cargo run debug information
+*** 
+* Leptos App configuration did use:
+cargo generate --git https://github.com/leptos-community/start-csr
+* Cargo-make and Makefile.toml
+** Makefile.toml
+** cargo extensions/functionality in cargo-make/
+** Taken from leptos-rs/leptos: 'examples/cargo-make' and 'examples/tailwind_axum'
+** 
+* Leptos Example App source tree
+** server configuration
+*** trunk for client-side rendering
+*** 'axum' 'hyper' and 'tower' crates of http servers.
+*** using tokio rust framework for asynchronous runtime.
+** Leptos application configuration
+*** src/main.rs (do not modify) and [src/lib.rs] # routes
+** RSX and .rs modules for views src/pages src/components
+*** pages - home.rs (index page), not_found (404), mod.rs (contains page modules)
+*** components - e.g. counter_button.rs view-controller "signal" paradigm controller and view templating
+** 
+** main.rs - entry point do not modify
+** lib.rs
+**** Contains website view! macro
+**** contains blanket website "Title" element
+**** 
