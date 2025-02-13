@@ -1,14 +1,15 @@
-// use crate::app::*
+use crate::example::*
 
 
 // Axum 'use' statements
 use axum::{
     body::Body,
     extract::Path,
-    http::Request,
+    routing::{get, post},
+    http::{Request, StatusCode},
     response::{IntoResponse, Response},
     routing::get,
-    Router
+    Json, Router,
 };
 // Leptos and leptos-axum
 use leptos::prelude::*;
@@ -16,7 +17,7 @@ use leptos_axum::{generate_route_list, LeptosRoutes};
 // Project-specific
 use leptos_axum_template::App;
 
-
+use serde::{Deserialize, Serialize};
 
 
 // Entry point to Tokio application
@@ -27,7 +28,7 @@ use leptos_axum_template::App;
 async fn main() {
 
     // Imports the database  server-side rendering (SSR) configuration for the 'todo' app'
-    use crate::todo::ssr::db;
+    use crate::example::ssr::db;
 
     // FIXME: Rrequires logging configuration as a Toml file probably
     simple_logger::init_with_level(log::Level::Error)
@@ -44,21 +45,28 @@ async fn main() {
     let conf = get_configuration(None).unwrap();
     let leptos_options = conf.leptos_options;
     let addr = leptos_options.site_addr;
-    let routes = generate_route_list(TodoApp);
+    let routes = generate_route_list(ExampleApp);
 
     // build our application with a route
     let app = Router::new()
-        .route("/special/:id", get(custom_handler))
-        .leptos_routes(&leptos_options, routes, {
-            let leptos_options = leptos_options.clone();
-            move || shell(leptos_options.clone())
-        })
-        .fallback(leptos_axum::file_and_error_handler(shell))
-        .with_state(leptos_options);
+	.route("/", get(root)) // 'GET /' goes to 'root'
+	.route("/model", get(create_model)); // 'POST /model' goes to 'create_model'
 
+        // .route("/special/:id", get(custom_handler))
+        // .leptos_routes(&leptos_options, routes, {
+        //     let leptos_options = leptos_options.clone();
+        //     move || shell(leptos_options.clone())
+        // })
+        // .fallback(leptos_axum::file_and_error_handler(shell))
+        // .with_state(leptos_options);
+
+
+    // 
     // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+
+    
     println!("listening on http://{}", &addr);
     axum::serve(listener, app.into_make_service())
         .await
@@ -90,7 +98,7 @@ async fn custom_handler(
         move || {
             provide_context(id.clone());
         },
-        TodoApp,
+        ExampleApp,
     );
     handler(req).await.into_response()
 }

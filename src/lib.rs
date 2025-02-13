@@ -8,7 +8,7 @@ mod components;
 mod pages;
 pub mod error_template;
 pub mod errors;
-pub mod todo;
+pub mod example;
 
 // Top-Level pages
 use crate::pages::home::Home;

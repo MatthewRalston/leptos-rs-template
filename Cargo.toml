@@ -6,45 +6,37 @@ authors = ["Matt Ralston <professional.bio.coder@gmail.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
-cargo-make = "0.37.24"
-cargo-leptos = "0.2.28"
+# Thanks to @cafce25 on Stack overflow for the answer to a debugging question
+# https://stackoverflow.com/questions/77726465/how-do-i-import-a-crate-type-cdylib-library
+[lib]
+crate-type = ["cdylib", "lib"]
 
+#wasm-bindgen = "0.2.93"
+[dependencies]
+axum = { version = "0.7.5", optional = true } # Axum-tokio stack
+chrono = "0.4.39"
 console_log = "1.0.0"
 console_error_panic_hook = "0.1.7"
-# futures = "0.3.30"
+futures = "0.3.30"
 http = "1.2"
-# Formal Leptos dependency
-leptos = { version = "0.7", features = ["csr"] }
+leptos = { version = "0.7", features = ["ssr"] } # Formal Leptos dependency
+leptos_axum = { version = "0.7.5" , optional = true } # Leptos axum
 leptos_meta = { version = "0.7" }
 leptos_router = { version = "0.7" }
-
-# Leptos axum
-leptos_axum = { version = "0.7.5" , optional = true }
 log = "0.4.22"
-
-# Axum-tokio stack
-axum = { version = "0.7.5", optional = true }
-tower = { version = "0.4.13", optional = true }
-tower-http = { version = "0.5.2", features = ["fs"], optional = true }
-tokio = { version = "1.39", features = [
-  "rt-multi-thread",
-  "macros",
-], optional = true }
-# tokio-stream = { version = "0.1", features = ["fs"], optional = true }
+serde = "1.0.217"
 sqlx = { version = "0.8.0", features = [
   "runtime-tokio-rustls",
   "sqlite",
 ], optional = true }
-
-
-# Other
+tower = { version = "0.4.13", optional = true }
+tower-http = { version = "0.5.2", features = ["fs"], optional = true }
+tokio = { version = "1.39", features = [
+  "full"
+], optional = true } #  features = [ "rt-multi-thread", "macros",]
 thiserror = "1.0"
-
-wasm-bindgen = "0.2.93"
-
-
 tracing = { version = "0.1.40", optional = true }
+
 
 
 
@@ -57,6 +49,7 @@ ssr = [
   "dep:tokio",
   "dep:tower",
   "dep:tower-http",
+  "dep:tokio",
   "dep:sqlx",
   "leptos/ssr",
   "leptos_meta/ssr",
@@ -77,9 +70,12 @@ ssr = [
 
 
 [dev-dependencies]
-wasm-bindgen = "0.2"
-wasm-bindgen-test = "0.3"
-web-sys = { version = "0.3", features = ["Document", "Window"] }
+cargo-make = "0.37.24"
+cargo-leptos = "0.2.28"
+
+# wasm-bindgen = "0.2"
+# wasm-bindgen-test = "0.3"
+# web-sys = { version = "0.3", features = ["Document", "Window"] }
 
 
 [profile.release]

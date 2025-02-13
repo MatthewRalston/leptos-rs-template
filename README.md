@@ -2,6 +2,16 @@
 
 How to create a Leptos app (Rust) using Tokio, Axum, and SQLx
 
+Uses the Leptos Server-side rendering features with `tokio` runtime and `axum` server on the `sqlx` ORM.
+
+
+## Start server
+
+```bash
+# cargo leptos watch
+./.start_server.sh
+```
+
 
 ![Project Logo](logo_url.png)
 
