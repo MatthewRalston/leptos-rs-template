@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS models
   key       VARCHAR,
   value     VARCHAR,
   created_date   TIMESTAMP,
-  updated_date   TIMESTAMP,
+  updated_date   TIMESTAMP
 );

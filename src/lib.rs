@@ -8,6 +8,7 @@
 //use self::pages::home::Home;
 // Modules
 pub mod todo;
+pub mod example;
 pub mod errors;
 pub mod error_template;
 

@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 use server_fn::ServerFnError;
 
 use chrono::prelude::*;
+//use chrono::{DateTime, Utc};
+
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
@@ -19,7 +21,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
 	    <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
 	    </head>
 	    <body>
-	    <MyApp/>
+	    <ExampleApp/>
 	    </body>
 	    </html>
 
@@ -46,13 +48,13 @@ pub mod ssr {
     use sqlx::{Connection, SqliteConnection};
 
     pub async fn db() -> Result<SqliteConnection, ServerFnError> {
-	Ok(SqliteConnection::connect("sqlite:Todos.db").await?)
+	Ok(SqliteConnection::connect("sqlite:Models.db").await?)
     }
 
 }
 
 #[server]
-pub async fn get_model() -> Result<Vec<Model>, ServerFnError> {
+pub async fn get_models() -> Result<Vec<Model>, ServerFnError> {
     use self::ssr::*;
     use http::request::Parts;
 
@@ -64,7 +66,7 @@ pub async fn get_model() -> Result<Vec<Model>, ServerFnError> {
 
     use futures::TryStreamExt;
 
-    let mut conn = db.await?;
+    let mut conn = db().await?;
 
     let mut models = Vec::new();
 
@@ -93,11 +95,15 @@ pub async fn add_model(key: String, value: String) -> Result<(), ServerFnError> 
     use chrono::prelude::*;
 
     let utc_now: DateTime<Utc> = Utc::now();
+    //let utc_now_string: String = utc_now.naive_utc().to_string();
     let mut conn = db().await?;
 
 
     match sqlx::query("INSERT INTO models (key, value, created_date, updated_date) VALUES ($1, $2, $3, $3)")
-	.bind(key, value, utc_now, utc_now)
+	.bind(key)
+	.bind(value)
+	.bind(utc_now)
+	.bind(utc_now)
 	.execute(&mut conn)
 	.await
     {
@@ -123,7 +129,7 @@ pub async fn delete_model(id: u16) -> Result<(), ServerFnError> {
 
 
 #[component]
-pub fn ExampleApp() -> IntoView {
+pub fn ExampleApp() -> impl IntoView {
     view! {
 	<header>
 	    <h1>"My Models"</h1>
@@ -136,7 +142,7 @@ pub fn ExampleApp() -> IntoView {
 
 
 #[component]
-pub fn Models() -> IntoView {
+pub fn Models() -> impl IntoView {
     let add_model = ServerMultiAction::<AddModel>::new();
     let submissions = add_model.submissions();
     let delete_model = ServerAction::<DeleteModel>::new();
@@ -168,10 +174,11 @@ pub fn Models() -> IntoView {
 				    let id = model.id;
 				    view! {
 					<li>
-					{model.title.clone()}
+					    <p><strong>"Key"</strong> : {model.key.clone()} </p>
+					    <p><strong>"Value"</strong> : {model.value.clone()} </p>
 					<ActionForm action=delete_model>
 					    <input type="hidden" name="id" value=id/>
-					    <input type="submit" value="X"/>
+					    <input type="submit" value="Delete"/>
 					    </ActionForm>
 					    </li>
 				    }
@@ -202,7 +209,7 @@ pub fn Models() -> IntoView {
 		.map(|submission| {
 		    view! {
 			<li class="pending">
-			{move || submission.input().get()}//.map(|data| data.key )
+			{move || submission.input().get().map(|data| view! { <p>data.key | data.value</p> } )}
 			</li>
 		    }
 		})

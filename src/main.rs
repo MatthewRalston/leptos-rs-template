@@ -1,4 +1,6 @@
-use leptos_template::todo::*;
+//use leptos_template::todo::*; // Working todo example
+
+use leptos_template::example::*;
 use axum::{
     body::Body,
     extract::Path,
@@ -11,7 +13,7 @@ use axum::{
 
 use tokio::net::TcpListener;
 //use dotenvy::dotenv;
-use std::env;
+//use std::env;
 
 
 use leptos::prelude::*;
@@ -32,7 +34,8 @@ async fn custom_handler(
         move || {
             provide_context(id.clone());
         },
-        TodoApp,
+	ExampleApp,
+        //TodoApp,
     );
     handler(req).await.into_response()
 }
@@ -56,7 +59,8 @@ async fn main() {
     // Setting this to None means we'll be using cargo-leptos and its env vars
     let conf = get_configuration(None).unwrap();
     let leptos_options = conf.leptos_options;
-    let routes = generate_route_list(TodoApp);
+    //let routes = generate_route_list(TodoApp); // Working for TodoApp
+    let routes = generate_route_list(ExampleApp);
 
     // build our application with a route
     let app = Router::new()

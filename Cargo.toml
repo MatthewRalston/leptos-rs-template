@@ -12,6 +12,9 @@ crate-type = ["cdylib", "rlib"]
 axum = { version = "0.7.5", optional = true }
 http = "1.1"
 
+# Timestamp/datetime library
+chrono = { version = "0.4.39", features = ["serde"] }
+
 # Enables dotenv for environment variable management in development
 #dotenvy = "0.15"
 
@@ -39,12 +42,13 @@ tower = { version = "0.4", optional = true }
 tower-http = { version = "0.5", features = ["full"], optional = true }
 
 # Database support (SQLx)
-sqlx = { version = "0.8.3", features = ["sqlite", "postgres", "runtime-tokio-rustls"], optional = true } # "tls-native-tls"
+sqlx = { version = "0.8.3", features = ["chrono", "sqlite", "postgres", "runtime-tokio-rustls"], optional = true } # "tls-native-tls"
 
 # Error handling
 thiserror = "1.0"
 leptos_router = "0.7.7"
 leptos_meta = "0.7.7"
+
 
 
 
