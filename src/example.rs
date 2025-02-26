@@ -40,7 +40,8 @@ pub struct Model {
     value: String,
 }
 
-
+// For a PostgreSQL model storage use the following
+// https://github.com/maxcountryman/tower-sessions-stores/blob/main/sqlx-store/examples/postgres.rs
 #[cfg(feature = "ssr")]
 pub mod ssr {
     // use http://{header::SET_COOKIE, HeaderMap, HeaderValue, StatusCode};
